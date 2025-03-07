@@ -1,4 +1,7 @@
+'use client'; // 标记为客户端组件
+
 import type { Chunk } from './chunkService';
+import React, { useState } from 'react';
 
 interface AIConfig {
     provider: 'openai' | 'gemini';
@@ -13,13 +16,29 @@ interface SceneResponse {
     chunks: Chunk[];
 }
 
-// 默认配置，从环境变量获取
+// 添加默认配置，获取环境变量
 const DEFAULT_CONFIG: AIConfig = {
     provider: 'gemini',
-    apiKey: process.env.API_KEY || '',
-    apiUrl: process.env.API_BASE_URL || 'https://api-proxy.me/gemini',
-    modelName: process.env.MODEL || 'gemini-pro',
-    englishLevel: process.env.ENGLISH_LEVEL || 'junior'
+    apiKey: process.env.NEXT_PUBLIC_API_KEY || '',
+    apiUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api-proxy.me/gemini',
+    modelName: process.env.NEXT_PUBLIC_MODEL || 'gemini-pro',
+    englishLevel: process.env.NEXT_PUBLIC_ENGLISH_LEVEL || 'junior'
+};
+
+// 导出函数以检查是否有设置好的默认配置
+export const hasDefaultApiKey = (): boolean => {
+    return Boolean(DEFAULT_CONFIG.apiKey);
+};
+
+// 导出默认配置以供前端组件使用
+export const getDefaultConfig = (): AIConfig => {
+    return { ...DEFAULT_CONFIG };
+};
+
+// 导出一个配置Hook，便于在React组件中使用
+export const useAIConfig = () => {
+    const [config, setConfig] = useState<AIConfig>({ ...DEFAULT_CONFIG });
+    return { config, setConfig };
 };
 
 const getEnglishLevelDescription = (level: string): string => {
@@ -138,37 +157,33 @@ const handleStreamResponse = async (
     return fullText;
 };
 
+// 修改函数签名，使config参数可选
 export const generateSceneContent = async (
     scene: string, 
-    configOverride?: Partial<AIConfig>,
-    onProgress: (dialogue: string) => void = () => {}
+    config?: Partial<AIConfig>,  // 使config成为可选参数
+    onProgress: (dialogue: string) => void = () => {}  // 设置默认空函数
 ): Promise<SceneResponse> => {
     try {
-        // 使用默认配置，如果用户提供了配置则合并它们
-        const config: AIConfig = { ...DEFAULT_CONFIG, ...configOverride };
-        
-        // 如果没有提供API密钥且环境变量中有API密钥，则使用环境变量中的API密钥
-        if (!config.apiKey && process.env.API_KEY) {
-            config.apiKey = process.env.API_KEY;
-        }
+        // 合并默认配置和用户提供的配置
+        const finalConfig: AIConfig = { ...DEFAULT_CONFIG, ...config };
         
         let endpoint;
         let headers;
         let body;
 
-        if (config.provider === 'openai') {
-            endpoint = `${config.apiUrl}/v1/chat/completions`;
+        if (finalConfig.provider === 'openai') {
+            endpoint = `${finalConfig.apiUrl}/v1/chat/completions`;
             headers = {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${config.apiKey}`,
+                'Authorization': `Bearer ${finalConfig.apiKey}`,
             };
-            body = createRequestBody(config, scene, false);
+            body = createRequestBody(finalConfig, scene, false);
         } else {
-            endpoint = `${config.apiUrl}/v1beta/models/${config.modelName}:generateContent?key=${config.apiKey}`;
+            endpoint = `${finalConfig.apiUrl}/v1beta/models/${finalConfig.modelName}:generateContent?key=${finalConfig.apiKey}`;
             headers = {
                 'Content-Type': 'application/json'
             };
-            body = createRequestBody(config, scene, false);
+            body = createRequestBody(finalConfig, scene, false);
         }
 
         const response = await fetch(endpoint, {
@@ -184,7 +199,7 @@ export const generateSceneContent = async (
         const data = await response.json();
         let content = '';
         
-        if (config.provider === 'openai') {
+        if (finalConfig.provider === 'openai') {
             content = data.choices[0]?.message?.content;
         } else {
             content = data.candidates[0]?.content?.parts[0]?.text;
