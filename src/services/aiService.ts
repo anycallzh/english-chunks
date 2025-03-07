@@ -25,9 +25,17 @@ const DEFAULT_CONFIG: AIConfig = {
     englishLevel: process.env.NEXT_PUBLIC_ENGLISH_LEVEL || 'junior'
 };
 
+// 检查并记录环境变量是否存在到控制台，便于调试
+console.log('环境变量加载情况:', {
+    API_KEY: Boolean(process.env.NEXT_PUBLIC_API_KEY),
+    API_BASE_URL: Boolean(process.env.NEXT_PUBLIC_API_BASE_URL),
+    MODEL: Boolean(process.env.NEXT_PUBLIC_MODEL),
+    ENGLISH_LEVEL: Boolean(process.env.NEXT_PUBLIC_ENGLISH_LEVEL)
+});
+
 // 导出函数以检查是否有设置好的默认配置
 export const hasDefaultApiKey = (): boolean => {
-    return Boolean(DEFAULT_CONFIG.apiKey);
+    return Boolean(DEFAULT_CONFIG.apiKey && DEFAULT_CONFIG.apiKey.length > 0);
 };
 
 // 导出默认配置以供前端组件使用
@@ -37,7 +45,14 @@ export const getDefaultConfig = (): AIConfig => {
 
 // 导出一个配置Hook，便于在React组件中使用
 export const useAIConfig = () => {
-    const [config, setConfig] = useState<AIConfig>({ ...DEFAULT_CONFIG });
+    const [config, setConfig] = useState<AIConfig>({
+        ...DEFAULT_CONFIG,
+        // 如果环境变量没有API Key，则尝试从localStorage获取
+        apiKey: DEFAULT_CONFIG.apiKey || 
+                (typeof window !== 'undefined' ? 
+                JSON.parse(localStorage.getItem('userSettings') || '{}')?.ai?.apiKey || '' : '')
+    });
+    
     return { config, setConfig };
 };
 
