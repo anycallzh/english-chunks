@@ -1,7 +1,11 @@
+// src/components/ConfigInitializer.tsx
 'use client';
 
 import { useEffect } from 'react';
+// 使用与 settingsHelper.ts 中相同的正确导入路径
 import { hasDefaultApiKey, getDefaultConfig } from '../services/aiService';
+// 或者：
+// import { hasDefaultApiKey, getDefaultConfig } from '../aiService';
 
 export function ConfigInitializer() {
   useEffect(() => {
@@ -25,8 +29,8 @@ export function ConfigInitializer() {
                 modelName: defaultConfig.modelName,
               },
               englishLevel: defaultConfig.englishLevel,
-              voice: defaultConfig.voice || 'en-US-GuyNeural', // 使用环境变量或默认值
-              speed: 1.0 // 默认速度
+              voice: process.env.NEXT_PUBLIC_VOICE || 'en-US-GuyNeural', // 使用环境变量或默认值
+              speed: 1.0
             }));
             
             console.log('✅ 环境变量配置已自动保存到localStorage');
