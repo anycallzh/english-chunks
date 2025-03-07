@@ -1,7 +1,5 @@
-// src/utils/settingsHelper.ts
 import { useRouter } from 'next/navigation';
-// 修改这一行 - 从 './aiService' 改为 '../aiService'
-import { hasDefaultApiKey, getDefaultConfig } from '../aiService';
+import { hasDefaultApiKey, getDefaultConfig } from './aiService'; // 引入函数
 
 interface AISettings {
     provider: 'openai' | 'gemini';
@@ -35,7 +33,7 @@ export const checkAndRedirectAPISettings = (
                             modelName: defaultConfig.modelName,
                         },
                         englishLevel: defaultConfig.englishLevel,
-                        voice: process.env.NEXT_PUBLIC_VOICE || 'en-US-GuyNeural', // 默认使用GuyNeural
+                        voice: 'en-US-JennyNeural',
                         speed: 1.0
                     }));
                     console.log('✅ 已自动应用环境变量配置');
