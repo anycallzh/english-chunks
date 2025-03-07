@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
-import { ConfigInitializer } from "@/components/ConfigInitializer"; // 添加这一行
+import { ConfigInitializer } from "@/components/ConfigInitializer"; // 添加导入
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
