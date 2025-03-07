@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation';
-import { hasDefaultApiKey, getDefaultConfig } from './aiService'; // 引入函数
+import { hasDefaultApiKey, getDefaultConfig } from './aiService'; // 确保正确导入
 
 interface AISettings {
     provider: 'openai' | 'gemini';
@@ -33,7 +33,7 @@ export const checkAndRedirectAPISettings = (
                             modelName: defaultConfig.modelName,
                         },
                         englishLevel: defaultConfig.englishLevel,
-                        voice: 'en-US-JennyNeural',
+                        voice: defaultConfig.voice || 'en-US-GuyNeural', // 使用环境变量或默认GuyNeural
                         speed: 1.0
                     }));
                     console.log('✅ 已自动应用环境变量配置');
