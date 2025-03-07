@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-// 使用正确的导入路径
-import { hasDefaultApiKey, getDefaultConfig } from '../aiService';
+import { hasDefaultApiKey, getDefaultConfig } from '../services/aiService';
 
 export function ConfigInitializer() {
   useEffect(() => {
@@ -26,8 +25,8 @@ export function ConfigInitializer() {
                 modelName: defaultConfig.modelName,
               },
               englishLevel: defaultConfig.englishLevel,
-              voice: process.env.NEXT_PUBLIC_VOICE || 'en-US-GuyNeural', // 默认使用GuyNeural
-              speed: 1.0
+              voice: 'en-US-JennyNeural', // 默认语音设置
+              speed: 1.0 // 默认速度
             }));
             
             console.log('✅ 环境变量配置已自动保存到localStorage');
