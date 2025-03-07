@@ -2,11 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    // 将服务器端环境变量暴露给客户端
-    API_KEY: process.env.API_KEY,
-    API_BASE_URL: process.env.API_BASE_URL,
-    MODEL: process.env.MODEL,
-    ENGLISH_LEVEL: process.env.ENGLISH_LEVEL,
+    NEXT_PUBLIC_API_KEY: process.env.NEXT_PUBLIC_API_KEY,
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
+    NEXT_PUBLIC_MODEL: process.env.NEXT_PUBLIC_MODEL,
+    NEXT_PUBLIC_ENGLISH_LEVEL: process.env.NEXT_PUBLIC_ENGLISH_LEVEL,
   },
 }
 
