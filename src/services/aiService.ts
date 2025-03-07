@@ -13,6 +13,15 @@ interface SceneResponse {
     chunks: Chunk[];
 }
 
+// 默认配置，从环境变量获取
+const DEFAULT_CONFIG: AIConfig = {
+    provider: 'gemini',
+    apiKey: process.env.API_KEY || '',
+    apiUrl: process.env.API_BASE_URL || 'https://api-proxy.me/gemini',
+    modelName: process.env.MODEL || 'gemini-pro',
+    englishLevel: process.env.ENGLISH_LEVEL || 'junior'
+};
+
 const getEnglishLevelDescription = (level: string): string => {
     switch (level) {
         case 'kindergarten':
@@ -131,10 +140,18 @@ const handleStreamResponse = async (
 
 export const generateSceneContent = async (
     scene: string, 
-    config: AIConfig,
-    onProgress: (dialogue: string) => void
+    configOverride?: Partial<AIConfig>,
+    onProgress: (dialogue: string) => void = () => {}
 ): Promise<SceneResponse> => {
     try {
+        // 使用默认配置，如果用户提供了配置则合并它们
+        const config: AIConfig = { ...DEFAULT_CONFIG, ...configOverride };
+        
+        // 如果没有提供API密钥且环境变量中有API密钥，则使用环境变量中的API密钥
+        if (!config.apiKey && process.env.API_KEY) {
+            config.apiKey = process.env.API_KEY;
+        }
+        
         let endpoint;
         let headers;
         let body;
@@ -223,4 +240,4 @@ export const generateSceneContent = async (
         console.error('Error generating scene content:', error);
         throw error;
     }
-}; 
+};
