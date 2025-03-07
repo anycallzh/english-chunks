@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
+import { ConfigInitializer } from "@/components/ConfigInitializer"; // 添加这一行
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="zh">
       <body className={inter.className}>
+        <ConfigInitializer /> {/* 添加这一行 */}
         <Navbar />
         {children}
       </body>
