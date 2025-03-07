@@ -271,3 +271,54 @@ export const generateSceneContent = async (
         throw error;
     }
 };
+// 添加到 aiService.ts 文件末尾
+export const isConfigured = (): boolean => {
+  // 检查环境变量
+  if (hasDefaultApiKey()) {
+    return true;
+  }
+  
+  // 如果环境变量没有配置，则检查localStorage
+  if (typeof window !== 'undefined') {
+    try {
+      const savedSettings = localStorage.getItem('userSettings');
+      if (savedSettings) {
+        const parsed = JSON.parse(savedSettings);
+        return Boolean(parsed?.ai?.apiKey);
+      }
+    } catch (error) {
+      console.error('Error checking configuration:', error);
+    }
+  }
+  
+  return false;
+};
+
+export const ensureConfiguration = () => {
+  // 如果已经有环境变量配置但localStorage还没有，则自动保存
+  if (hasDefaultApiKey() && typeof window !== 'undefined') {
+    try {
+      const savedSettings = localStorage.getItem('userSettings');
+      // 如果没有保存的设置，或者保存的设置没有API Key
+      if (!savedSettings || !JSON.parse(savedSettings)?.ai?.apiKey) {
+        const defaultConfig = getDefaultConfig();
+        localStorage.setItem('userSettings', JSON.stringify({
+          ai: {
+            provider: defaultConfig.provider,
+            apiKey: defaultConfig.apiKey,
+            apiUrl: defaultConfig.apiUrl,
+            modelName: defaultConfig.modelName,
+          },
+          englishLevel: defaultConfig.englishLevel,
+          voice: 'en-US-JennyNeural',
+          speed: 1.0
+        }));
+        console.log('配置已自动修复');
+        return true;
+      }
+    } catch (error) {
+      console.error('配置检查失败:', error);
+    }
+  }
+  return false;
+};
