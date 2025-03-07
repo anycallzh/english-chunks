@@ -25,7 +25,7 @@ export function ConfigInitializer() {
                 modelName: defaultConfig.modelName,
               },
               englishLevel: defaultConfig.englishLevel,
-              voice: 'en-US-JennyNeural', // 默认语音设置
+              voice: defaultConfig.voice || 'en-US-GuyNeural', // 使用环境变量或默认值
               speed: 1.0 // 默认速度
             }));
             
