@@ -9,7 +9,6 @@ interface AIConfig {
     apiUrl: string;
     modelName: string;
     englishLevel: string;
-    voice?: string;
 }
 
 interface SceneResponse {
@@ -23,8 +22,7 @@ const DEFAULT_CONFIG: AIConfig = {
     apiKey: process.env.NEXT_PUBLIC_API_KEY || '',
     apiUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api-proxy.me/gemini',
     modelName: process.env.NEXT_PUBLIC_MODEL || 'gemini-pro',
-    englishLevel: process.env.NEXT_PUBLIC_ENGLISH_LEVEL || 'junior',
-    voice: process.env.NEXT_PUBLIC_VOICE || 'en-US-GuyNeural'
+    englishLevel: process.env.NEXT_PUBLIC_ENGLISH_LEVEL || 'junior'
 };
 
 // 检查并记录环境变量是否存在到控制台，便于调试
@@ -32,8 +30,7 @@ console.log('环境变量加载情况:', {
     API_KEY: Boolean(process.env.NEXT_PUBLIC_API_KEY),
     API_BASE_URL: Boolean(process.env.NEXT_PUBLIC_API_BASE_URL),
     MODEL: Boolean(process.env.NEXT_PUBLIC_MODEL),
-    ENGLISH_LEVEL: Boolean(process.env.NEXT_PUBLIC_ENGLISH_LEVEL),
-    VOICE: Boolean(process.env.NEXT_PUBLIC_VOICE)
+    ENGLISH_LEVEL: Boolean(process.env.NEXT_PUBLIC_ENGLISH_LEVEL)
 });
 
 // 导出函数以检查是否有设置好的默认配置
